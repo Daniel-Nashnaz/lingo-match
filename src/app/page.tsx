@@ -1,4 +1,4 @@
-import MemoryGame from "@/components/navbar/navbar";
+import MemoryGame from "@/components/test";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -17,5 +17,9 @@ export default function Home() {
   //   </div>
 
   // );
-  return(<><MemoryGame/></>)
+  return (
+    <>
+      <MemoryGame />
+    </>
+  );
 }
