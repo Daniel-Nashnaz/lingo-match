@@ -1,43 +1,43 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast, Toaster } from "react-hot-toast";
+import { v4 as uuidv4 } from 'uuid';
 import { WordPair, WordPairType } from "@/lib/types";
+import { confirmAction } from "@/lib/utils/notificationUtils";
+import { useAppContext } from "@/context/AppContext";
+import { DURATION_ERROR, NUM_OF_PAIRS, DURATION_SUCCSS } from "@/lib/utils/constants";
+
+
+
 
 export default function InputPage() {
   const router = useRouter();
-  const [wordPairs, setWordPairs] = useState<WordPair[]>([
-    { wordKnown: "חתול", wordLearn: "cat" },
-    { wordKnown: "כלב", wordLearn: "dog" },
-    { wordKnown: "דג", wordLearn: "fish" },
-    { wordKnown: "פרה", wordLearn: "cow" },
-  ]);
+  const { words, setWords } = useAppContext();
+  const [wordPairs, setWordPairs] = useState<WordPair[]>(words);
   const [newPair, setNewPair] = useState<WordPair>({
     wordKnown: "",
     wordLearn: "",
   });
 
-  const addWordPair = () => {
+  const addWordPair = useCallback(() => {
     if (newPair.wordKnown.trim() && newPair.wordLearn.trim()) {
-      setWordPairs([...wordPairs, { ...newPair }]);
+      setWordPairs(prev => [...prev, { ...newPair, id: uuidv4() }]);
       setNewPair({ wordKnown: "", wordLearn: "" });
-      toast.success("New word pair added");
+      toast.success("New word pair added", { duration: DURATION_SUCCSS });
     } else {
-      toast.error("Please fill in both fields");
+      toast.error("Please fill in both fields", { duration: DURATION_ERROR });
     }
-  };
+  }, [newPair]);
 
-  const updateWordPair = (
-    index: number | undefined,
-    field: WordPairType,
-    value: string
-  ) => {
+
+  const updateWordPair = (index: number, field: WordPairType, value: string) => {
     if (index) {
       const newPairs = [...wordPairs];
       newPairs[index][field] = value;
@@ -45,21 +45,56 @@ export default function InputPage() {
     }
   };
 
-  const removeWordPair = (index: number) => {
-    const newPairs = wordPairs.filter((_, i) => i !== index);
-    setWordPairs(newPairs);
-    toast.success("Word pair removed");
+  /**
+   * removeWordPair Function
+   * 
+   * Asynchronously removes a word pair from the state after user confirmation.
+   * 
+   * @param {string} id - The unique identifier of the word pair to be removed.
+   * 
+   * Process:
+   * 1. Calls `confirmAction` to display a confirmation toast asking the user to confirm 
+   *    the deletion of the specific word pair.
+   * 2. If the user confirms, the word pair is removed from the `wordPairs` state.
+   * 3. Displays a success toast notification indicating the word pair has been removed.
+   * 
+   * Dependencies:
+   * - `confirmAction`: Used to handle the confirmation dialog and resolve the action.
+   * 
+   * Usage:
+   * This function is typically called in response to a user's click event on a delete button 
+   * associated with a word pair.
+   */
+  const removeWordPair = async (index: number) => {
+    const confirmed: boolean = await confirmAction(
+      () => {
+        const newPairs = wordPairs.filter((_, i) => i !== index);
+        setWordPairs(newPairs);
+      },
+      "Are you sure you want to delete this word pair?"
+    );
+    if (confirmed)
+      toast.success("Word pair removed", { duration: DURATION_ERROR });
+  };
+
+  const clearAllWordPairs = async () => {
+    const confirmed: boolean = await confirmAction(
+      () => setWordPairs([]),
+      "Are you sure you want to delete all word pairs?"
+    );
+    if (confirmed)
+      toast.success("All word pairs have been deleted", { duration: DURATION_ERROR });
   };
 
   const startGame = () => {
-    console.log(wordPairs);
-
-    if (wordPairs.length < 5) {
-      toast.error("Please add at least 5 word pairs");
-    } else {
+    if (wordPairs.length < NUM_OF_PAIRS)
+      toast.error(`Please add at least ${NUM_OF_PAIRS} word pairs`, { duration: DURATION_ERROR });
+    else {
+      setWords(wordPairs)
       router.push("/game");
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 px-4">
@@ -139,9 +174,7 @@ export default function InputPage() {
             </div>
             <div className="mt-6 flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0">
               <Button
-                onClick={() => {
-                  setWordPairs([]);
-                }}
+                onClick={clearAllWordPairs}
                 variant="outline"
                 className="w-full sm:w-auto hover:bg-red-600"
               >
