@@ -16,6 +16,13 @@ import { DURATION_ERROR, NUM_OF_PAIRS, DURATION_SUCCSS } from "@/lib/utils/const
 
 
 
+const INITIAL_WORD_PAIRS: WordPair[] = [
+  { id: uuidv4(), wordKnown: "חתול", wordLearn: "cat" },
+  { id: uuidv4(), wordKnown: "כלב", wordLearn: "dog" },
+  { id: uuidv4(), wordKnown: "דג", wordLearn: "fish" },
+  { id: uuidv4(), wordKnown: "פרה", wordLearn: "cow" },
+  { id: uuidv4(), wordKnown: "ארנב", wordLearn: "rabbit" },
+];
 
 export default function InputPage() {
   const router = useRouter();

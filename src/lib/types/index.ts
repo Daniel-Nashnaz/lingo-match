@@ -3,6 +3,11 @@ export interface WordPair {
   wordKnown: string;
   wordLearn: string;
 }
+export interface GameResult {
+  score: number;
+  moves: number;
+  gameTime: number;
+}
 
 export enum WordPairType {
   WORDKNOWN = "wordKnown",
