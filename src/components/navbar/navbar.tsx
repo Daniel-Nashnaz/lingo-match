@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 
 import { useState, useEffect } from "react";
 import { Shuffle } from "lucide-react";
@@ -218,3 +218,4 @@ export default function MemoryGame() {
     </div>
   );
 }
+*/
