@@ -2,6 +2,9 @@
 
 **LingoMatch** is an engaging web-based memory game designed to aid users in learning and practicing new languages. It transforms language learning into an enjoyable experience by letting users input word pairs in their native language and their target language, then testing their memory through a matching game. The goal is to enhance vocabulary retention while having fun.
 
+## Play the Game:
+You can try out the game here: [LingoMatch](https://lingo-match-nine.vercel.app/)
+
 ## Features:
 - **Custom Word Input**: Enter up to 5 (or more) word pairs to practice with personalized vocabulary.
 - **Memory Game**: Flip cards to match words between two languages, boosting memory and language skills.
