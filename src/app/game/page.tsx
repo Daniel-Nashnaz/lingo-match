@@ -81,6 +81,7 @@ export default function Game() {
                 if (score + 1 === words.length) {
                     setTimeout(() => {
                         setGameOver(true);
+                        console.log(gameOver);
                         setGameResult({ gameTime: gameTime, moves: moves + 1, score: score + 1 })
                         router.push('summary-game');
                     }, 1000);

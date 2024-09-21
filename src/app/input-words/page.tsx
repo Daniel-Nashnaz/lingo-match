@@ -14,8 +14,7 @@ import { confirmAction } from "@/lib/utils/notificationUtils";
 import { useAppContext } from "@/context/AppContext";
 import { DURATION_ERROR, NUM_OF_PAIRS, DURATION_SUCCSS } from "@/lib/utils/constants";
 
-
-
+/*
 const INITIAL_WORD_PAIRS: WordPair[] = [
   { id: uuidv4(), wordKnown: "חתול", wordLearn: "cat" },
   { id: uuidv4(), wordKnown: "כלב", wordLearn: "dog" },
@@ -23,7 +22,7 @@ const INITIAL_WORD_PAIRS: WordPair[] = [
   { id: uuidv4(), wordKnown: "פרה", wordLearn: "cow" },
   { id: uuidv4(), wordKnown: "ארנב", wordLearn: "rabbit" },
 ];
-
+*/
 export default function InputPage() {
   const router = useRouter();
   const { words, setWords } = useAppContext();
