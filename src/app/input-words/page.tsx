@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, Save } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { WordPair, WordPairType } from "@/lib/types";
-import { confirmAction } from "@/lib/utils/notificationUtils";
+import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
 import { useAppContext } from "@/context/AppContext";
 import {
   DURATION_ERROR,
@@ -40,9 +40,9 @@ export default function InputPage() {
     if (newPair.wordKnown.trim() && newPair.wordLearn.trim()) {
       setWordPairs((prev) => [...prev, { ...newPair, id: uuidv4() }]);
       setNewPair({ wordKnown: "", wordLearn: "" });
-      toast.success("New word pair added", { duration: DURATION_SUCCSS });
+      toast.success("New word pair added", { autoClose: DURATION_SUCCSS });
     } else {
-      toast.error("Please fill in both fields", { duration: DURATION_ERROR });
+      toast.error("Please fill in both fields", { autoClose: DURATION_ERROR });
     }
   }, [newPair]);
 
@@ -84,24 +84,27 @@ export default function InputPage() {
       setWordPairs(newPairs);
     }, "Are you sure you want to delete this word pair?");
     if (confirmed)
-      toast.success("Word pair removed", { duration: DURATION_ERROR });
+      toast.success("Word pair removed", { autoClose: DURATION_ERROR });
   };
 
   const clearAllWordPairs = async () => {
+    if (wordPairs.length <= 0) {
+      return;
+    }
     const confirmed: boolean = await confirmAction(
       () => setWordPairs([]),
       "Are you sure you want to delete all word pairs?"
     );
     if (confirmed)
       toast.success("All word pairs have been deleted", {
-        duration: DURATION_ERROR,
+        autoClose: DURATION_ERROR,
       });
   };
 
   const startGame = () => {
     if (wordPairs.length < NUM_OF_PAIRS) {
       toast.error(`Please add at least ${NUM_OF_PAIRS} word pairs`, {
-        duration: DURATION_ERROR,
+        autoClose: DURATION_ERROR
       });
       return;
     }
@@ -110,7 +113,7 @@ export default function InputPage() {
     );
     if (validWordPairs.length < wordPairs.length) {
       toast.error(`Please input valid word pairs`, {
-        duration: DURATION_ERROR,
+        autoClose: DURATION_ERROR,
       });
     } else {
       setWords(wordPairs);
@@ -120,7 +123,7 @@ export default function InputPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 px-4">
-      <Toaster position="top-center" />
+      <ToastConfig />
       <div className="w-full max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 text-center text-black">Enter Words</h2>
         <Tabs defaultValue="wordInput" className="w-full">

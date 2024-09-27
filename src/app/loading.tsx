@@ -8,7 +8,7 @@ export default function Loading() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 flex flex-col items-center justify-center">
             <LoadingSpinner />
-            <h2 className="text-xl sm:text-2xl font-semibold mt-4">Loading...</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mt-4 text-black">Loading...</h2>
         </div>
     );
 }

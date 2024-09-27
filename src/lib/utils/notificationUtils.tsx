@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { toast } from "react-hot-toast";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 /**
  * confirmAction Function
@@ -29,32 +30,32 @@ import { toast } from "react-hot-toast";
 export const confirmAction = (action: () => void, description: string): Promise<boolean> => {
     return new Promise<boolean>((resolve) => {
         toast(
-            (t) => (
+            ({ closeToast }) => (
                 <motion.div
                     className="bg-white shadow-lg rounded-lg p-4 space-y-4"
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                 >
-                    <p className="text-lg font-semibold text-gray-700" > {description} </p>
-                    < div className="flex justify-end space-x-2" >
+                    <p className="text-lg font-semibold text-gray-700">{description}</p>
+                    <div className="flex justify-end space-x-2">
                         <Button
                             variant="outline"
                             size="sm"
                             className="text-red-500 border-red-500"
                             onClick={() => {
-                                toast.dismiss(t.id);
+                                closeToast();
                                 action();
                                 resolve(true);
                             }}
                         >
                             Yes
                         </Button>
-                        < Button
+                        <Button
                             variant="outline"
                             size="sm"
                             onClick={() => {
-                                toast.dismiss(t.id);
+                                closeToast();
                                 resolve(false);
                             }}
                         >
@@ -63,7 +64,14 @@ export const confirmAction = (action: () => void, description: string): Promise<
                     </div>
                 </motion.div>
             ),
-            { duration: Infinity, position: "top-center" }
+            { autoClose: false, position: "top-center" }
         );
     });
 };
+
+const ToastConfig = () => (
+    <>
+        <ToastContainer limit={1} pauseOnFocusLoss={false} pauseOnHover={false} position="top-center" />
+    </>
+);
+export default ToastConfig;

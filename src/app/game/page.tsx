@@ -5,12 +5,12 @@ import { Progress } from "@/components/ui/progress";
 import { useAppContext } from "@/context/AppContext";
 import { CardGame, WordPair } from "@/lib/types";
 import { DURATION_ERROR } from "@/lib/utils/constants";
-import { confirmAction } from "@/lib/utils/notificationUtils";
+import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Trophy, Zap } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 export default function Game() {
 
@@ -27,7 +27,7 @@ export default function Game() {
 
     useEffect(() => {
         if (words.length === 0) {
-            toast.error("Please add word pairs before starting the game.", { duration: DURATION_ERROR });
+            toast.error("Please add word pairs before starting the game.", { autoClose: DURATION_ERROR });
             router.push('/input-words');
         } else {
             setCards(generateCardPairs(words));
@@ -99,11 +99,11 @@ export default function Game() {
             "Are you sure you want to Restart Game?"
         );
         if (confirmed)
-            toast.success("The game restarted", { duration: DURATION_ERROR });
+            toast.success("The game restarted", { autoClose: DURATION_ERROR });
     }
 
     return (<>
-        <Toaster position="top-center" />
+        <ToastConfig />
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -147,7 +147,7 @@ export default function Game() {
                                             ? 180
                                             : 0,
                                 }}
-                                transition={{ duration: 0.6 }}
+                                transition={{ autoClose: 0.6 }}
                                 className="absolute inset-0 w-full h-full flex items-center justify-center bg-white text-2xl font-bold backface-hidden"
                                 style={{
                                     backfaceVisibility: "hidden",
@@ -176,7 +176,7 @@ export default function Game() {
                                             ? 0
                                             : 180,
                                 }}
-                                transition={{ duration: 0.6 }}
+                                transition={{ autoClose: 0.6 }}
                                 className="absolute inset-0 w-full h-full flex items-center justify-center bg-green-100 text-2xl font-bold backface-hidden"
                                 style={{
                                     backfaceVisibility: "hidden",
