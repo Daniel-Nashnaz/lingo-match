@@ -51,7 +51,7 @@ export default function InputPage() {
     field: WordPairType,
     value: string
   ) => {
-    if (index) {
+    if (index >= 0) {
       const newPairs = [...wordPairs];
       newPairs[index][field] = value;
       setWordPairs(newPairs);
