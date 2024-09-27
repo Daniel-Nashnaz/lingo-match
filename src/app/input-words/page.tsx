@@ -122,7 +122,7 @@ export default function InputPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 px-4">
       <Toaster position="top-center" />
       <div className="w-full max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center">Enter Words</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-black">Enter Words</h2>
         <Tabs defaultValue="wordInput" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="wordInput">Word Input</TabsTrigger>
@@ -167,7 +167,7 @@ export default function InputPage() {
                       onClick={() => removeWordPair(index)}
                       className="flex-shrink-0"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 text-black" />
                     </Button>
                   </motion.div>
                 ))}
@@ -198,7 +198,7 @@ export default function InputPage() {
               <Button
                 onClick={clearAllWordPairs}
                 variant="outline"
-                className="w-full sm:w-auto hover:bg-red-600"
+                className="w-full sm:w-auto hover:bg-red-600 text-black"
               >
                 Clear All
               </Button>

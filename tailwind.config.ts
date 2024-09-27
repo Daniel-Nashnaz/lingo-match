@@ -65,7 +65,7 @@ const config: Config = {
       // Define the utilities you want to add
       const newUtilities = {
         ".input-style": {
-          "@apply flex-1 p-2 border rounded-lg shadow-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500":
+          "@apply flex-1 p-2 border rounded-lg shadow-sm text-center focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-800 text-white placeholder-gray-500":
             {},
         },
       };

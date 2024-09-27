@@ -198,7 +198,7 @@ export default function Game() {
                     ))}
                 </AnimatePresence>
             </div>
-            <Button className="mt-6 mx-auto block" onClick={() => restartGame()}>
+            <Button className="mt-6 mx-auto block bg-blue-500 hover:bg-neutral-500" onClick={() => restartGame()}>
                 Restart Game
             </Button>
         </motion.div>
