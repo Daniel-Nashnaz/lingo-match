@@ -17,6 +17,7 @@ import {
   NUM_OF_PAIRS,
   DURATION_SUCCSS,
 } from "@/lib/utils/constants";
+import SettingsTab from "@/components/game/settingsTab";
 /*
 const INITIAL_WORD_PAIRS: WordPair[] = [
   { id: uuidv4(), wordKnown: "חתול", wordLearn: "cat" },
@@ -104,7 +105,7 @@ export default function InputPage() {
   const startGame = () => {
     if (wordPairs.length < NUM_OF_PAIRS) {
       toast.error(`Please add at least ${NUM_OF_PAIRS} word pairs`, {
-        autoClose: DURATION_ERROR
+        autoClose: DURATION_ERROR,
       });
       return;
     }
@@ -125,7 +126,9 @@ export default function InputPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 px-4">
       <ToastConfig />
       <div className="w-full max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center text-black">Enter Words</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-black">
+          Enter Words
+        </h2>
         <Tabs defaultValue="wordInput" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="wordInput">Word Input</TabsTrigger>
@@ -211,9 +214,7 @@ export default function InputPage() {
             </div>
           </TabsContent>
           <TabsContent value="settings">
-            <p className="text-center text-gray-500">
-              Additional settings will be added soon
-            </p>
+            <SettingsTab />
           </TabsContent>
         </Tabs>
       </div>
