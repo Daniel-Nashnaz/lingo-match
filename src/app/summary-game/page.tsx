@@ -26,7 +26,7 @@ export default function SummaryPage() {
         <h1 className="text-3xl font-bold mb-6 text-black">Game Summary</h1>
         <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
         <p className="text-2xl sm:text-4xl font-bold mb-6 text-slate-900">
-          Congratulations!
+          {gameResult.isWin ? "Congratulations!" : "Better Luck Next Time!"}
         </p>
         <div className="space-y-2 mb-6">
           <p className="text-xl text-black">

@@ -7,6 +7,7 @@ export interface GameResult {
   score: number;
   moves: number;
   gameTime: number;
+  isWin: boolean | null;
 }
 
 export interface GameSettings {

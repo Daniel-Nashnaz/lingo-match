@@ -6,6 +6,7 @@ import { useAppContext } from "@/context/AppContext";
 import { CardGame } from "@/lib/types";
 import {
   DURATION_ERROR,
+  DURATION_SHOW_CARDS,
   DURATION_SUCCSS,
   EXTRA_TIME_OF_MATCH_PAIR,
 } from "@/lib/utils/constants";
@@ -13,7 +14,7 @@ import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Trophy, Zap } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import {
   calculateGameLives,
@@ -30,16 +31,19 @@ export default function Game() {
   const [matchedPairs, setMatchedPairs] = useState<number[]>([]);
   const [score, setScore] = useState<number>(0);
   const [gameLife, setGameLife] = useState<number>(calculateGameLives(words));
+  const [moves, setMoves] = useState<number>(0);
+  const [gameTime, setGameTime] = useState<number>(0);
+  const [isWinner, setIsWinner] = useState<boolean | null>(null);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
   const [gameTimeLeft, setGameTimeLeft] = useState<number>(
     calculateGameTimes(words)
   );
-  const [moves, setMoves] = useState<number>(0);
-  const [gameTime, setGameTime] = useState<number>(0);
-  const [gameStartTime, setGameStartTime] = useState<number | null>(null);
-  const [gameOver, setGameOver] = useState<boolean>(false);
   const [isShowCards, setShowCards] = useState<boolean>(
     gameSettings.showCardsMode
   );
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastGameTimeRef = useRef<number>(0);
+
   useEffect(() => {
     if (words.length === 0) {
       toast.error("Please add word pairs before starting the game.", {
@@ -48,28 +52,23 @@ export default function Game() {
       router.push("/input-words");
     } else {
       setCards(generateCardPairs(words));
-      setGameStartTime(Date.now());
+      setGameTime(0);
+      startTimer();
     }
   }, [words, router]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (gameStartTime) {
-      timer = setInterval(() => {
-        setGameTime(Math.floor((Date.now() - gameStartTime) / 1000));
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [gameStartTime]);
+    lastGameTimeRef.current = gameTime;
+  }, [gameTime]);
 
-  //TODO: option that can stop game and timer...
   useEffect(() => {
     let idInterval: NodeJS.Timeout;
-    if (gameSettings.timedMode) {
+    if (!isPaused && gameSettings.timedMode) {
       idInterval = setInterval(() => {
         setGameTimeLeft((prevTimeLeft) => {
           if (prevTimeLeft <= 0) {
             clearInterval(idInterval);
+            setIsWinner(() => false);
             gameOverInit();
             return 0;
           }
@@ -78,19 +77,43 @@ export default function Game() {
       }, 1000);
     }
     return () => clearInterval(idInterval);
-  }, [gameSettings.timedMode]);
+  }, [isPaused, gameSettings.timedMode]);
+
+  const startTimer = () => {
+    if (timerRef.current) return;
+
+    timerRef.current = setInterval(() => {
+      setGameTime((prevTime) => prevTime + 1);
+    }, 1000);
+  };
+
+  const pauseTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (isPaused) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  }, [isPaused]);
 
   useEffect(() => {
     if (isShowCards) {
       setTimeout(() => {
         setShowCards(false);
-      }, 800);
+      }, DURATION_SHOW_CARDS);
     }
   }, [isShowCards]);
 
   const onCardClick = (index: number) => {
     // Prevent action if two cards are already flipped or if the card is already matched/flipped
     if (
+      isPaused ||
       flippedIndexes.length === 2 ||
       matchedPairs.includes(index) ||
       flippedIndexes.includes(index)
@@ -129,6 +152,7 @@ export default function Game() {
         setGameLife((prevLife) => Math.max(0, prevLife - 1));
         if (gameSettings.disqualificationMode && gameLife - 1 <= 0) {
           setTimeout(() => {
+            setIsWinner(() => false);
             gameOverInit();
           }, 500);
         }
@@ -136,21 +160,25 @@ export default function Game() {
     }
   };
   const gameOverInit = () => {
-    setGameOver(true);
+    pauseTimer();
     setGameResult({
-      gameTime: gameTime,
+      gameTime: lastGameTimeRef.current,
       moves: moves <= 0 ? moves : moves + 1,
       score: score,
+      isWin: isWinner,
     });
     router.push("summary-game");
+    pauseTimer();
   };
   const restartGame = async () => {
     const confirmed: boolean = await confirmAction(
       () => router.push("/input-words"),
       "Are you sure you want to Restart Game?"
     );
-    if (confirmed)
+    if (confirmed) {
       toast.success("The game restarted", { autoClose: DURATION_ERROR });
+      pauseTimer();
+    }
   };
   return (
     <>
@@ -235,7 +263,7 @@ export default function Game() {
                   >
                     <Card className="w-full h-full">
                       <CardContent className="flex items-center justify-center h-full text-2xl font-bold">
-                        ?
+                        <span>❓</span>
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -274,12 +302,17 @@ export default function Game() {
               ))}
             </AnimatePresence>
           </div>
-          <Button
-            className="mt-6 mx-auto block bg-blue-500 hover:bg-neutral-500"
-            onClick={() => restartGame()}
-          >
-            Restart Game
-          </Button>
+          <div className="flex justify-center space-x-8 mt-8">
+            <Button
+              className="bg-blue-500 hover:bg-neutral-500"
+              onClick={() => setIsPaused((prev) => !prev)}
+            >
+              {isPaused ? "Resume" : "Pause"}
+            </Button>
+            <Button variant="destructive" onClick={() => restartGame()}>
+              Reset Game
+            </Button>
+          </div>
         </motion.div>
       </ErrorBoundary>
     </>
