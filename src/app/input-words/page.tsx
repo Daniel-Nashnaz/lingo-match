@@ -14,11 +14,11 @@ import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
 import { useAppContext } from "@/context/AppContext";
 import {
   DURATION_ERROR,
-  NUM_OF_PAIRS,
+  NUM_OF_PAIRS_REQUIRED,
   DURATION_SUCCSS,
 } from "@/lib/utils/constants";
 import SettingsTab from "@/components/game/settingsTab";
-/*
+
 const INITIAL_WORD_PAIRS: WordPair[] = [
   { id: uuidv4(), wordKnown: "חתול", wordLearn: "cat" },
   { id: uuidv4(), wordKnown: "כלב", wordLearn: "dog" },
@@ -26,12 +26,11 @@ const INITIAL_WORD_PAIRS: WordPair[] = [
   { id: uuidv4(), wordKnown: "פרה", wordLearn: "cow" },
   { id: uuidv4(), wordKnown: "ארנב", wordLearn: "rabbit" },
 ];
-*/
 
 export default function InputPage() {
   const router = useRouter();
   const { words, setWords } = useAppContext();
-  const [wordPairs, setWordPairs] = useState<WordPair[]>(words);
+  const [wordPairs, setWordPairs] = useState<WordPair[]>(INITIAL_WORD_PAIRS);
   const [newPair, setNewPair] = useState<WordPair>({
     wordKnown: "",
     wordLearn: "",
@@ -103,8 +102,8 @@ export default function InputPage() {
   };
 
   const startGame = () => {
-    if (wordPairs.length < NUM_OF_PAIRS) {
-      toast.error(`Please add at least ${NUM_OF_PAIRS} word pairs`, {
+    if (wordPairs.length < NUM_OF_PAIRS_REQUIRED) {
+      toast.error(`Please add at least ${NUM_OF_PAIRS_REQUIRED} word pairs`, {
         autoClose: DURATION_ERROR,
       });
       return;
@@ -200,7 +199,7 @@ export default function InputPage() {
                 </Button>
               </div>
             </div>
-            <div className="mt-6 flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0">
+            <div className="mt-6 flex justify-between">
               <Button
                 onClick={clearAllWordPairs}
                 variant="outline"
@@ -208,14 +207,16 @@ export default function InputPage() {
               >
                 Clear All
               </Button>
-              <Button onClick={startGame} className="w-full sm:w-auto">
-                <Save className="mr-2" /> Save and Start Game
-              </Button>
             </div>
           </TabsContent>
           <TabsContent value="settings">
             <SettingsTab />
           </TabsContent>
+          <div className="mt-6 flex justify-center">
+            <Button onClick={startGame} className="w-full sm:w-auto">
+              <Save className="mr-2" /> Save and Start Game
+            </Button>
+          </div>
         </Tabs>
       </div>
     </div>

@@ -17,8 +17,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [words, setWords] = useState<WordPair[]>([]);
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
   const [gameSettings, setGameSettings] = useState<GameSettings>({
-    disqualificationMode: false,
+    disqualificationMode: true,
     timedMode: false,
+    showCardsMode: false,
   });
   console.log("Current words:", words);
 

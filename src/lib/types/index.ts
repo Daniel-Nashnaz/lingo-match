@@ -12,6 +12,7 @@ export interface GameResult {
 export interface GameSettings {
   disqualificationMode: boolean;
   timedMode: boolean;
+  showCardsMode: boolean;
 }
 
 export interface SettingInfo {
