@@ -1,5 +1,5 @@
 "use client";
-import { GameResult, WordPair } from "@/lib/types";
+import { GameResult, GameSettings, WordPair } from "@/lib/types";
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface AppContextType {
@@ -7,6 +7,8 @@ interface AppContextType {
   setWords: (words: WordPair[]) => void;
   gameResult: GameResult | null;
   setGameResult: (result: GameResult) => void;
+  gameSettings: GameSettings;
+  updateGameSettings: (settings: Partial<GameSettings>) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -14,9 +16,30 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [words, setWords] = useState<WordPair[]>([]);
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
+  const [gameSettings, setGameSettings] = useState<GameSettings>({
+    disqualificationMode: true,
+    timedMode: false,
+    showCardsMode: false,
+  });
   console.log("Current words:", words);
+
+  const updateGameSettings = (settings: Partial<GameSettings>) => {
+    setGameSettings((prevSettings) => ({
+      ...prevSettings,
+      ...settings,
+    }));
+  };
   return (
-    <AppContext.Provider value={{ words, setWords, gameResult, setGameResult }}>
+    <AppContext.Provider
+      value={{
+        words,
+        setWords,
+        gameResult,
+        setGameResult,
+        gameSettings,
+        updateGameSettings,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );
