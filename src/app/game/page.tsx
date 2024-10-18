@@ -22,7 +22,6 @@ import {
 } from "./gameHelpers";
 import HeartDisplay from "@/components/game/heartDisplay";
 import ErrorBoundary from "@/components/utils/errorBoundary";
-import test from "node:test";
 export default function Game() {
   const router = useRouter();
   const { words, gameSettings, setGameResult } = useAppContext();

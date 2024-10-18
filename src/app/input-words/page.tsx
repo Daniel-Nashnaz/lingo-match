@@ -30,7 +30,7 @@ const INITIAL_WORD_PAIRS: WordPair[] = [
 export default function InputPage() {
   const router = useRouter();
   const { words, setWords } = useAppContext();
-  const [wordPairs, setWordPairs] = useState<WordPair[]>(INITIAL_WORD_PAIRS);
+  const [wordPairs, setWordPairs] = useState<WordPair[]>(words);
   const [newPair, setNewPair] = useState<WordPair>({
     wordKnown: "",
     wordLearn: "",
