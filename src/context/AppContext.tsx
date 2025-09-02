@@ -1,6 +1,6 @@
-"use client";
-import { GameResult, GameSettings, WordPair } from "@/lib/types";
-import { createContext, useContext, useState, ReactNode } from "react";
+'use client';
+import { GameResult, GameSettings, WordPair } from '@/lib/types/gameInterfases';
+import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AppContextType {
   words: WordPair[];
@@ -21,7 +21,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     timedMode: false,
     showCardsMode: false,
   });
-  console.log("Current words:", words);
+  console.log('Current words:', words);
 
   const updateGameSettings = (settings: Partial<GameSettings>) => {
     setGameSettings((prevSettings) => ({
@@ -48,7 +48,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 export const useAppContext = () => {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error("useAppContext must be used within an AppProvider");
+    throw new Error('useAppContext must be used within an AppProvider');
   }
   return context;
 };

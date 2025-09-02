@@ -1,14 +1,13 @@
-import { GameSettings } from "@/lib/types";
+import { GameSettings } from '@/lib/types/gameInterfases';
 
 export const settingsInfo = (
   gameSettings: GameSettings,
   updateGameSettings: (settings: Partial<GameSettings>) => void
 ) => [
   {
-    id: "timed-mode",
-    title: "⏱️ Timed Mode",
-    description:
-      "Adds a challenge by limiting the time you have to finish the game.",
+    id: 'timed-mode',
+    title: '⏱️ Timed Mode',
+    description: 'Adds a challenge by limiting the time you have to finish the game.',
     details: `In this mode, the game starts with a set amount of time based on how many cards you are playing with. 
 
               Here's how it works:
@@ -22,13 +21,12 @@ export const settingsInfo = (
     onChange: (checked: boolean) => {
       updateGameSettings({ timedMode: checked });
     },
-    emoji: "⚡",
+    emoji: '⚡',
   },
   {
-    id: "disqualification-mode",
-    title: "🚫 Disqualification Mode",
-    description:
-      "Adds a challenge by limiting the number of mistakes you can make.",
+    id: 'disqualification-mode',
+    title: '🚫 Disqualification Mode',
+    description: 'Adds a challenge by limiting the number of mistakes you can make.',
     details: `The penalty system introduces a limited number of chances (called "lives") 
               that decrease every time you fail to match two cards. You start with a certain number 
               of lives depending on how many cards you choose to play with. For example, if you 
@@ -43,12 +41,12 @@ export const settingsInfo = (
     onChange: (checked: boolean) => {
       updateGameSettings({ disqualificationMode: checked });
     },
-    emoji: "💀",
+    emoji: '💀',
   },
   {
-    id: "reveal-cards-mode",
-    title: "👁‍🗨 Reveal Cards Mode",
-    description: "Briefly show  all cards face-up at the start of the game.",
+    id: 'reveal-cards-mode',
+    title: '👁‍🗨 Reveal Cards Mode',
+    description: 'Briefly show  all cards face-up at the start of the game.',
     details: `In this mode, all cards are revealed for a short time (800 milisecond) at the start of the game.   
           Here's how it works:
           - When the game starts, all the cards are shown face-up for 800 milisecond.
@@ -61,6 +59,6 @@ export const settingsInfo = (
     onChange: (checked: boolean) => {
       updateGameSettings({ showCardsMode: checked });
     },
-    emoji: "🔍",
+    emoji: '🔍',
   },
 ];

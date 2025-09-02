@@ -1,11 +1,11 @@
-import { CardGame, WordPair } from "@/lib/types";
+import { CardGame, WordPair } from '@/lib/types/gameInterfases';
 import {
   EXTRA_TIME_OF_ADD_FIVE_PAIRS,
   LIFE_MULTIPLIER,
   NUM_OF_PAIRS_REQUIRED,
   TIME_OF_FIVE_PAIRS,
-} from "@/lib/utils/constants";
-import { v4 as uuidv4 } from "uuid";
+} from '@/lib/utils/constants';
+import { v4 as uuidv4 } from 'uuid';
 
 export const generateCardPairs = (words: WordPair[]): CardGame[] => {
   const cardPairs: CardGame[] = words.flatMap((word, index) => {

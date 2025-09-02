@@ -1,56 +1,49 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Save } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "react-toastify";
-import { v4 as uuidv4 } from "uuid";
-import { WordPair, WordPairType } from "@/lib/types";
-import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
-import { useAppContext } from "@/context/AppContext";
-import {
-  DURATION_ERROR,
-  NUM_OF_PAIRS_REQUIRED,
-  DURATION_SUCCSS,
-} from "@/lib/utils/constants";
-import SettingsTab from "@/components/game/settingsTab";
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Trash2, Save } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+import { WordPair } from '@/lib/types/gameInterfases';
+import ToastConfig, { confirmAction } from '@/components/utils/notificationUtils';
+import { useAppContext } from '@/context/AppContext';
+import { DURATION_ERROR, NUM_OF_PAIRS_REQUIRED, DURATION_SUCCSS } from '@/lib/utils/constants';
+import SettingsTab from '@/components/game/settingsTab';
+import { WordPairType } from '@/lib/types/enums';
 
 const INITIAL_WORD_PAIRS: WordPair[] = [
-  { id: uuidv4(), wordKnown: "חתול", wordLearn: "cat" },
-  { id: uuidv4(), wordKnown: "כלב", wordLearn: "dog" },
-  { id: uuidv4(), wordKnown: "דג", wordLearn: "fish" },
-  { id: uuidv4(), wordKnown: "פרה", wordLearn: "cow" },
-  { id: uuidv4(), wordKnown: "ארנב", wordLearn: "rabbit" },
+  { id: uuidv4(), wordKnown: 'חתול', wordLearn: 'cat' },
+  { id: uuidv4(), wordKnown: 'כלב', wordLearn: 'dog' },
+  { id: uuidv4(), wordKnown: 'דג', wordLearn: 'fish' },
+  { id: uuidv4(), wordKnown: 'פרה', wordLearn: 'cow' },
+  { id: uuidv4(), wordKnown: 'ארנב', wordLearn: 'rabbit' },
 ];
 
 export default function InputPage() {
   const router = useRouter();
   const { words, setWords } = useAppContext();
-  const [wordPairs, setWordPairs] = useState<WordPair[]>(words);
+  const [wordPairs, setWordPairs] = useState<WordPair[]>(INITIAL_WORD_PAIRS);
   const [newPair, setNewPair] = useState<WordPair>({
-    wordKnown: "",
-    wordLearn: "",
+    wordKnown: '',
+    wordLearn: '',
   });
 
   const addWordPair = useCallback(() => {
     if (newPair.wordKnown.trim() && newPair.wordLearn.trim()) {
       setWordPairs((prev) => [...prev, { ...newPair, id: uuidv4() }]);
-      setNewPair({ wordKnown: "", wordLearn: "" });
-      toast.success("New word pair added", { autoClose: DURATION_SUCCSS });
+      setNewPair({ wordKnown: '', wordLearn: '' });
+      toast.success('New word pair added', { autoClose: DURATION_SUCCSS });
     } else {
-      toast.error("Please fill in both fields", { autoClose: DURATION_ERROR });
+      toast.error('Please fill in both fields', { autoClose: DURATION_ERROR });
     }
   }, [newPair]);
 
-  const updateWordPair = (
-    index: number,
-    field: WordPairType,
-    value: string
-  ) => {
+  const updateWordPair = (index: number, field: WordPairType, value: string) => {
     if (index >= 0) {
       const newPairs = [...wordPairs];
       newPairs[index][field] = value;
@@ -82,9 +75,8 @@ export default function InputPage() {
     const confirmed: boolean = await confirmAction(() => {
       const newPairs = wordPairs.filter((_, i) => i !== index);
       setWordPairs(newPairs);
-    }, "Are you sure you want to delete this word pair?");
-    if (confirmed)
-      toast.success("Word pair removed", { autoClose: DURATION_ERROR });
+    }, 'Are you sure you want to delete this word pair?');
+    if (confirmed) toast.success('Word pair removed', { autoClose: DURATION_ERROR });
   };
 
   const clearAllWordPairs = async () => {
@@ -93,10 +85,10 @@ export default function InputPage() {
     }
     const confirmed: boolean = await confirmAction(
       () => setWordPairs([]),
-      "Are you sure you want to delete all word pairs?"
+      'Are you sure you want to delete all word pairs?'
     );
     if (confirmed)
-      toast.success("All word pairs have been deleted", {
+      toast.success('All word pairs have been deleted', {
         autoClose: DURATION_ERROR,
       });
   };
@@ -108,16 +100,14 @@ export default function InputPage() {
       });
       return;
     }
-    const validWordPairs = wordPairs.filter(
-      (pair) => pair.wordKnown.trim() && pair.wordLearn.trim()
-    );
+    const validWordPairs = wordPairs.filter((pair) => pair.wordKnown.trim() && pair.wordLearn.trim());
     if (validWordPairs.length < wordPairs.length) {
       toast.error(`Please input valid word pairs`, {
         autoClose: DURATION_ERROR,
       });
     } else {
       setWords(wordPairs);
-      router.push("/game");
+      router.push('/game');
     }
   };
 
@@ -125,9 +115,7 @@ export default function InputPage() {
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-8 px-4">
       <ToastConfig />
       <div className="w-full max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6 text-center text-black">
-          Enter Words
-        </h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-black">Enter Words</h2>
         <Tabs defaultValue="wordInput" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="wordInput">Word Input</TabsTrigger>
@@ -146,24 +134,12 @@ export default function InputPage() {
                   >
                     <Input
                       value={pair.wordKnown}
-                      onChange={(e) =>
-                        updateWordPair(
-                          index,
-                          WordPairType.WORDKNOWN,
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => updateWordPair(index, WordPairType.WORDKNOWN, e.target.value)}
                       className="input-style"
                     />
                     <Input
                       value={pair.wordLearn}
-                      onChange={(e) =>
-                        updateWordPair(
-                          index,
-                          WordPairType.WORDLEARN,
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => updateWordPair(index, WordPairType.WORDLEARN, e.target.value)}
                       className="input-style"
                     />
                     <Button
@@ -181,17 +157,13 @@ export default function InputPage() {
                 <Input
                   placeholder="Known"
                   value={newPair.wordKnown}
-                  onChange={(e) =>
-                    setNewPair({ ...newPair, wordKnown: e.target.value })
-                  }
+                  onChange={(e) => setNewPair({ ...newPair, wordKnown: e.target.value })}
                   className="input-style"
                 />
                 <Input
                   placeholder="Learning "
                   value={newPair.wordLearn}
-                  onChange={(e) =>
-                    setNewPair({ ...newPair, wordLearn: e.target.value })
-                  }
+                  onChange={(e) => setNewPair({ ...newPair, wordLearn: e.target.value })}
                   className="input-style"
                 />
                 <Button onClick={addWordPair} className="w-full sm:w-auto">

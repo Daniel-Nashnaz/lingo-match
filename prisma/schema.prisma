@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model Word {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId // Use MongoDB ObjectId as PK
+  original        String        // English word
+  category_id     String        // Reference to Category
+  difficulty      Int
+  is_cached       Boolean
+  cache_expires   DateTime?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt
+
+  translations    Translation[] // Relations
+  category        Category      @relation(fields: [category_id], references: [id])
+  userProgress    UserProgress[] // Add this line
+  wordAttempts    WordAttempt[] // Add this line
+}
+
+model Translation {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  word_id       String    // Reference to Word
+  language_id   String    // Reference to Language
+  translated    String    // Translation in the target language
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+
+  word          Word      @relation(fields: [word_id], references: [id])
+  language      Language  @relation(fields: [language_id], references: [id])
+}
+
+model Language {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  code         String    // Language code (he, es, fr...)
+  is_active    Boolean
+  created_at   DateTime  @default(now())
+
+  translations Translation[]
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId // Google OAuth ID
+  email         String   @unique
+  name          String
+  picture       String?
+  created_at    DateTime @default(now())
+  last_login    DateTime @updatedAt
+  settings      Json?
+
+  progress      UserProgress[]
+  game_sessions GameSession[]
+}
+
+model UserProgress {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  user_id         String
+  word_id         String
+  times_reviewed  Int
+  correct_attempts Int
+  wrong_attempts   Int
+  mastered        Boolean
+  last_reviewed   DateTime?
+  success_rate    Float?
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  user            User       @relation(fields: [user_id], references: [id])
+  word            Word       @relation(fields: [word_id], references: [id])
+}
+
+model GameSession {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  user_id         String
+  category_id     String
+  start_time      DateTime
+  end_time        DateTime
+  total_words     Int
+  correct_words   Int
+  success_rate    Float?
+  game_type       String
+
+  user            User      @relation(fields: [user_id], references: [id])
+  category        Category  @relation(fields: [category_id], references: [id])
+  word_attempts   WordAttempt[]
+}
+
+model WordAttempt {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  session_id    String
+  word_id       String
+  is_correct    Boolean
+  attempt_time_ms Int
+  created_at    DateTime  @default(now())
+
+  session       GameSession @relation(fields: [session_id], references: [id])
+  word          Word        @relation(fields: [word_id], references: [id])
+}
+
+model Category {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String
+  level        String    
+  word_count   Int       
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  words        Word[]
+  sessions     GameSession[]
+}
+

@@ -1,28 +1,19 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { useAppContext } from "@/context/AppContext";
-import { CardGame } from "@/lib/types";
-import {
-  DURATION_ERROR,
-  DURATION_SHOW_CARDS,
-  DURATION_SUCCSS,
-  EXTRA_TIME_OF_MATCH_PAIR,
-} from "@/lib/utils/constants";
-import ToastConfig, { confirmAction } from "@/lib/utils/notificationUtils";
-import { AnimatePresence, motion } from "framer-motion";
-import { Clock, Trophy, Zap } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import {
-  calculateGameLives,
-  calculateGameTimes,
-  generateCardPairs,
-} from "./gameHelpers";
-import HeartDisplay from "@/components/game/heartDisplay";
-import ErrorBoundary from "@/components/utils/errorBoundary";
+'use client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { useAppContext } from '@/context/AppContext';
+import { CardGame } from '@/lib/types/gameInterfases';
+import { DURATION_ERROR, DURATION_SHOW_CARDS, DURATION_SUCCSS, EXTRA_TIME_OF_MATCH_PAIR } from '@/lib/utils/constants';
+import ToastConfig, { confirmAction } from '@/components/utils/notificationUtils';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Clock, Trophy, Zap } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { calculateGameLives, calculateGameTimes, generateCardPairs } from './gameHelpers';
+import HeartDisplay from '@/components/game/heartDisplay';
+import ErrorBoundary from '@/components/utils/errorBoundary';
 export default function Game() {
   const router = useRouter();
   const { words, gameSettings, setGameResult } = useAppContext();
@@ -35,21 +26,17 @@ export default function Game() {
   const [gameTime, setGameTime] = useState<number>(0);
   const [isWinner, setIsWinner] = useState<boolean | null>(null);
   const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [gameTimeLeft, setGameTimeLeft] = useState<number>(
-    calculateGameTimes(words)
-  );
-  const [isShowCards, setShowCards] = useState<boolean>(
-    gameSettings.showCardsMode
-  );
+  const [gameTimeLeft, setGameTimeLeft] = useState<number>(calculateGameTimes(words));
+  const [isShowCards, setShowCards] = useState<boolean>(gameSettings.showCardsMode);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const lastGameTimeRef = useRef<number>(0);
 
   useEffect(() => {
     if (words.length === 0) {
-      toast.error("Please add word pairs before starting the game.", {
+      toast.error('Please add word pairs before starting the game.', {
         autoClose: DURATION_ERROR,
       });
-      router.push("/input-words");
+      router.push('/input-words');
     } else {
       setCards(generateCardPairs(words));
       setGameTime(0);
@@ -112,12 +99,7 @@ export default function Game() {
 
   const onCardClick = (index: number) => {
     // Prevent action if two cards are already flipped or if the card is already matched/flipped
-    if (
-      isPaused ||
-      flippedIndexes.length === 2 ||
-      matchedPairs.includes(index) ||
-      flippedIndexes.includes(index)
-    )
+    if (isPaused || flippedIndexes.length === 2 || matchedPairs.includes(index) || flippedIndexes.includes(index))
       return;
 
     const updatedFlippedIndexes = [...flippedIndexes, index];
@@ -126,17 +108,13 @@ export default function Game() {
 
     if (updatedFlippedIndexes.length === 2) {
       const [firstIndex, secondIndex] = updatedFlippedIndexes;
-      const isMatch =
-        cards[firstIndex].identityMatched ===
-        cards[secondIndex].identityMatched;
+      const isMatch = cards[firstIndex].identityMatched === cards[secondIndex].identityMatched;
 
       if (isMatch) {
         setMatchedPairs((prev) => [...prev, firstIndex, secondIndex]);
         setScore((prevScore) => prevScore + 1);
         if (gameSettings.timedMode) {
-          setGameTimeLeft(
-            (prevTimeLeft) => prevTimeLeft + EXTRA_TIME_OF_MATCH_PAIR
-          );
+          setGameTimeLeft((prevTimeLeft) => prevTimeLeft + EXTRA_TIME_OF_MATCH_PAIR);
           toast.info(`Great job! ${EXTRA_TIME_OF_MATCH_PAIR} seconds added.`, {
             autoClose: DURATION_SUCCSS,
           });
@@ -167,16 +145,16 @@ export default function Game() {
       score: score,
       isWin: isWinner,
     });
-    router.push("summary-game");
+    router.push('summary-game');
     pauseTimer();
   };
   const restartGame = async () => {
     const confirmed: boolean = await confirmAction(
-      () => router.push("/input-words"),
-      "Are you sure you want to Restart Game?"
+      () => router.push('/input-words'),
+      'Are you sure you want to Restart Game?'
     );
     if (confirmed) {
-      toast.success("The game restarted", { autoClose: DURATION_ERROR });
+      toast.success('The game restarted', { autoClose: DURATION_ERROR });
       pauseTimer();
     }
   };
@@ -205,11 +183,7 @@ export default function Game() {
               <div className="flex items-center space-x-2">
                 <Clock className="text-blue-500 text-xl sm:text-2xl" />
                 <span
-                  className={`{text-lg sm:text-xl ${
-                    gameTimeLeft <= 10
-                      ? "text-red-600 animate-pulse"
-                      : "text-black"
-                  }`}
+                  className={`{text-lg sm:text-xl ${gameTimeLeft <= 10 ? 'text-red-600 animate-pulse' : 'text-black'}`}
                 >
                   Time Left: {gameTimeLeft}s
                 </span>
@@ -222,10 +196,7 @@ export default function Game() {
             )}
             {gameSettings.disqualificationMode && (
               <div className="flex items-center space-x-2">
-                <HeartDisplay
-                  currentGameLife={gameLife}
-                  totalLife={calculateGameLives(words)}
-                />
+                <HeartDisplay currentGameLife={gameLife} totalLife={calculateGameLives(words)} />
               </div>
             )}
           </div>
@@ -237,28 +208,23 @@ export default function Game() {
                   key={index}
                   className="relative w-full h-32 cursor-pointer"
                   onClick={() => onCardClick(index)}
-                  style={{ perspective: "1000px" }} // Enable 3D perspective
+                  style={{ perspective: '1000px' }} // Enable 3D perspective
                 >
                   {/* Front side (Question mark) */}
                   <motion.div
                     initial={{ rotateY: 0 }}
                     animate={{
-                      rotateY:
-                        flippedIndexes.includes(index) ||
-                        matchedPairs.includes(index)
-                          ? 180
-                          : 0,
+                      rotateY: flippedIndexes.includes(index) || matchedPairs.includes(index) ? 180 : 0,
                     }}
                     transition={{ autoClose: 0.6 }}
                     className="absolute inset-0 w-full h-full flex items-center justify-center bg-white text-2xl font-bold backface-hidden"
                     style={{
-                      backfaceVisibility: "hidden",
-                      transformStyle: "preserve-3d",
+                      backfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                       transform:
-                        flippedIndexes.includes(index) ||
-                        matchedPairs.includes(index)
-                          ? "rotateY(180deg)"
-                          : "rotateY(0deg)",
+                        flippedIndexes.includes(index) || matchedPairs.includes(index)
+                          ? 'rotateY(180deg)'
+                          : 'rotateY(0deg)',
                     }}
                   >
                     <Card className="w-full h-full">
@@ -272,24 +238,17 @@ export default function Game() {
                   <motion.div
                     initial={{ rotateY: 180 }}
                     animate={{
-                      rotateY:
-                        flippedIndexes.includes(index) ||
-                        matchedPairs.includes(index) ||
-                        isShowCards
-                          ? 0
-                          : 180,
+                      rotateY: flippedIndexes.includes(index) || matchedPairs.includes(index) || isShowCards ? 0 : 180,
                     }}
                     transition={{ autoClose: 0.6 }}
                     className="absolute inset-0 w-full h-full flex items-center justify-center bg-green-100 text-2xl font-bold backface-hidden"
                     style={{
-                      backfaceVisibility: "hidden",
-                      transformStyle: "preserve-3d",
+                      backfaceVisibility: 'hidden',
+                      transformStyle: 'preserve-3d',
                       transform:
-                        flippedIndexes.includes(index) ||
-                        matchedPairs.includes(index) ||
-                        isShowCards
-                          ? "rotateY(0deg)"
-                          : "rotateY(180deg)",
+                        flippedIndexes.includes(index) || matchedPairs.includes(index) || isShowCards
+                          ? 'rotateY(0deg)'
+                          : 'rotateY(180deg)',
                     }}
                   >
                     <Card className="w-full h-full bg-green-100">
@@ -303,11 +262,8 @@ export default function Game() {
             </AnimatePresence>
           </div>
           <div className="flex justify-center space-x-8 mt-8">
-            <Button
-              className="bg-blue-500 hover:bg-neutral-500"
-              onClick={() => setIsPaused((prev) => !prev)}
-            >
-              {isPaused ? "Resume" : "Pause"}
+            <Button className="bg-blue-500 hover:bg-neutral-500" onClick={() => setIsPaused((prev) => !prev)}>
+              {isPaused ? 'Resume' : 'Pause'}
             </Button>
             <Button variant="destructive" onClick={() => restartGame()}>
               Reset Game

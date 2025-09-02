@@ -26,11 +26,6 @@ export interface SettingInfo {
   emoji: string;
 }
 
-export enum WordPairType {
-  WORDKNOWN = "wordKnown",
-  WORDLEARN = "wordLearn",
-}
-
 export interface CardGame {
   id: number;
   identityMatched: string;

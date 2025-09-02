@@ -13,3 +13,6 @@ export const EXTRA_TIME_OF_ADD_FIVE_PAIRS = 40;
 export const EXTRA_TIME_OF_MATCH_PAIR = 5;
 
 export const DURATION_SHOW_CARDS = 800;
+
+export const DATAMUSE_API_URL = 'https://api.datamuse.com/words';
+export const MYMEMORY_API_URL = 'https://api.mymemory.translated.net/get';
